@@ -140,7 +140,7 @@ class App extends Component {
                         type="text"
                         style={{ width: '200px' }}
                         onChange={(e) => this.setState({ idToDelete: e.target.value })}
-                        placeholder="put id of item to delete here"
+                        placeholder="id des zu loeschenden Objektes"
                     />
                     <button onClick={() => this.deleteFromDB(this.state.idToDelete)}>
                         DELETE
@@ -151,7 +151,7 @@ class App extends Component {
                         type="text"
                         style={{ width: '200px' }}
                         onChange={(e) => this.setState({ idToUpdate: e.target.value })}
-                        placeholder="id of item to update here"
+                        placeholder="id des zu updatenden Objektes"
                     />
                     <br />
                     <input
