@@ -7,7 +7,10 @@ const DataSchema = new Schema(
         id: Number,
         vorname: String,
         nachname: String,
-        alter: Number
+        geschlecht: Number,
+        strasse: String,
+        postleitzahl: Number,
+        ort: String
     },
     { timestamps: true }
 );

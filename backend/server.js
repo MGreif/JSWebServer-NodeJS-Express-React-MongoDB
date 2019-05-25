@@ -50,9 +50,9 @@ router.delete('/deleteData', (req, res) => {
 router.post('/putData', (req, res) => {
     let data = new Data();
 
-    const { id, vorname, nachname, alter } = req.body;
+    const { id, vorname, nachname, geschlecht, strasse, postleitzahl,ort } = req.body;
 
-    if ((((!id && id !== 0) || !vorname) || !nachname) || !alter){
+    if (((((((!id && id !== 0) || !vorname) || !nachname) || !geschlecht) || !strasse) || !postleitzahl) || !ort) {
         return res.json({
             success: false,
             error: 'INVALID INPUTS',
@@ -60,7 +60,10 @@ router.post('/putData', (req, res) => {
     }
     data.vorname = vorname;
     data.nachname = nachname;
-    data.alter = alter;
+    data.geschlecht = geschlecht;
+    data.strasse = strasse;
+    data.postleitzahl = postleitzahl;
+    data.ort = ort;
     data.id = id;
     data.save((err) => {
         if (err) return res.json({ success: false, error: err });

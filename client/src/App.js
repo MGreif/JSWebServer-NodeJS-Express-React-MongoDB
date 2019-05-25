@@ -35,7 +35,7 @@ class App extends Component {
             .then((res) => this.setState({ data: res.data }));
     };
 
-    putDataToDB = (vorname, nachname, alter) => {
+    putDataToDB = (vorname, nachname, geschlecht, strasse, postleitzahl, ort) => {
         let currentIds = this.state.data.map((data) => data.id);
         let idToBeAdded = 0;
         while (currentIds.includes(idToBeAdded)) {
@@ -46,7 +46,11 @@ class App extends Component {
             id: idToBeAdded,
             vorname: vorname,
             nachname: nachname,
-            alter: alter
+            geschlecht: geschlecht,
+            strasse: strasse,
+            postleitzahl: postleitzahl,
+            ort: ort
+
         });
     };
 
@@ -66,7 +70,7 @@ class App extends Component {
         });
     };
 
-    updateDB = (idToUpdate, updateToApplyVN, updateToApplyNN, updateToApplyA) => {
+    updateDB = (idToUpdate, updateToApplyVN, updateToApplyNN, updateToApplyG, updateToApplyS, updateToApplyP, updateToApplyO) => {
         let objIdToUpdate = null;
         parseInt(idToUpdate);
         this.state.data.forEach((dat) => {
@@ -86,10 +90,25 @@ class App extends Component {
                 update: { nachname: updateToApplyNN },
             });
         }
-        if (updateToApplyA != null && updateToApplyA != "") {
+        if (updateToApplyG != null && updateToApplyG != "") {
             axios.post('http://localhost:3001/api/updateData', {
                 id: objIdToUpdate,
-                update: { alter: updateToApplyA },
+                update: { geschlecht: updateToApplyG },
+            });
+        } if (updateToApplyS != null && updateToApplyS != "") {
+            axios.post('http://localhost:3001/api/updateData', {
+                id: objIdToUpdate,
+                update: { strasse: updateToApplyS },
+            });
+        } if (updateToApplyP != null && updateToApplyP != "") {
+            axios.post('http://localhost:3001/api/updateData', {
+                id: objIdToUpdate,
+                update: { postleitzahl: updateToApplyP },
+            });
+        } if (updateToApplyO != null && updateToApplyO != "") {
+            axios.post('http://localhost:3001/api/updateData', {
+                id: objIdToUpdate,
+                update: { ort: updateToApplyO },
             });
         };
     }
@@ -106,11 +125,16 @@ class App extends Component {
                                 <span style={{ color: 'gray' }}> id: </span> {dat.id} <br />
                                 <span style={{ color: 'gray' }}> Vorname: </span> {dat.vorname}<br />
                                 <span style={{ color: 'gray' }}> Nachname: </span> {dat.nachname}<br />
-                                <span style={{ color: 'gray' }}> Alter: </span> {dat.alter}<br />
+                                <span style={{ color: 'gray' }}> Geschlecht: </span> {dat.geschlecht}<br />
+                                <span style={{ color: 'gray' }}> Strasse: </span> {dat.strasse}<br />
+                                <span style={{ color: 'gray' }}> Postleitzahl: </span> {dat.postleitzahl}<br />
+                                <span style={{ color: 'gray' }}> Ort: </span> {dat.ort}<br />
                             </li>
                         ))}
                 </ul>
                 <div style={{ padding: '10px' }}>
+
+                    
                     <input
                         type="text"
                         onChange={(e) => this.setState({ vorname: e.target.value })}
@@ -127,11 +151,32 @@ class App extends Component {
                     <br />
                     <input
                         type="text"
-                        onChange={(e) => this.setState({ alter: e.target.value })}
-                        placeholder="Alter"
+                        onChange={(e) => this.setState({ geschlecht: e.target.value })}
+                        placeholder="Geschlecht"
                         style={{ width: '200px' }}
                     />
-                    <button onClick={() => this.putDataToDB(this.state.vorname, this.state.nachname, parseInt(this.state.alter))}>
+                    <br />
+                    <input
+                        type="text"
+                        onChange={(e) => this.setState({ strasse: e.target.value })}
+                        placeholder="Strasse"
+                        style={{ width: '200px' }}
+                    />
+                    <br />
+                    <input
+                        type="text"
+                        onChange={(e) => this.setState({ postleitzahl: e.target.value })}
+                        placeholder="Postleitzahl"
+                        style={{ width: '200px' }}
+                    />
+                    <br />
+                    <input
+                        type="text"
+                        onChange={(e) => this.setState({ ort: e.target.value })}
+                        placeholder="Ort"
+                        style={{ width: '200px' }}
+                    />
+                    <button onClick={() => this.putDataToDB(this.state.vorname, this.state.nachname, parseInt(this.state.geschlecht), this.state.strasse, parseInt(this.state.postleitzahl), this.state.ort)}>
                         ADD
           </button>
                 </div>
@@ -171,15 +216,36 @@ class App extends Component {
                     <input
                         type="text"
                         style={{ width: '200px' }}
-                        onChange={(e) => this.setState({ updateToApplyA: e.target.value })}
-                        placeholder="Neues Alter"
+                        onChange={(e) => this.setState({ updateToApplyG: e.target.value })}
+                        placeholder="Neues Geschlecht"
+                    />
+                    <br />
+                    <input
+                        type="text"
+                        style={{ width: '200px' }}
+                        onChange={(e) => this.setState({ updateToApplyS: e.target.value })}
+                        placeholder="Neue Strasse"
+                    />
+                    <br />
+                    <input
+                        type="text"
+                        style={{ width: '200px' }}
+                        onChange={(e) => this.setState({ updateToApplyP: e.target.value })}
+                        placeholder="Neue Postleitzahl"
+                    />
+                    <br />
+                    <input
+                        type="text"
+                        style={{ width: '200px' }}
+                        onChange={(e) => this.setState({ updateToApplyO: e.target.value })}
+                        placeholder="Neuer Ort"
                     />
                     <button
                         onClick={() =>
-                            this.updateDB(this.state.idToUpdate, this.state.updateToApplyVN, this.state.updateToApplyNN, this.state.updateToApplyA)
-                        }
-                    >
-                        UPDATE
+                            this.updateDB(this.state.idToUpdate, this.state.updateToApplyVN, this.state.updateToApplyNN, this.state.updateToApplyG, this.state.updateToApplyS, this.state.updateToApplyP, this.state.updateToApplyO)
+                }
+            >
+                UPDATE
           </button>
                 </div>
             </div>
