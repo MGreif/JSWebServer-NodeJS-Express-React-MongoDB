@@ -30,7 +30,7 @@ class App extends Component {
     }
 
     getDataFromDb = () => {
-        fetch('http://localhost:3001/api/getData')
+        fetch('http://localhost:3000/api/getData')
             .then((data) => data.json())
             .then((res) => this.setState({ data: res.data }));
     };
@@ -42,7 +42,7 @@ class App extends Component {
             ++idToBeAdded;
         }
 
-        axios.post('http://localhost:3001/api/putData', {
+        axios.post('http://localhost:3000/api/putData', {
             id: idToBeAdded,
             vorname: vorname,
             nachname: nachname,
@@ -63,7 +63,7 @@ class App extends Component {
             }
         });
 
-        axios.delete('http://localhost:3001/api/deleteData', {
+        axios.delete('http://localhost:3000/api/deleteData', {
             data: {
                 id: objIdToDelete,
             },
@@ -79,45 +79,53 @@ class App extends Component {
             }
         });
         if (updateToApplyVN != null && updateToApplyVN != "") {
-            axios.post('http://localhost:3001/api/updateData', {
+            axios.post('http://localhost:3000/api/updateData', {
                 id: objIdToUpdate,
                 update: { vorname: updateToApplyVN },
             });
         }
         if (updateToApplyNN != null && updateToApplyNN != "") {
-            axios.post('http://localhost:3001/api/updateData', {
+            axios.post('http://localhost:3000/api/updateData', {
                 id: objIdToUpdate,
                 update: { nachname: updateToApplyNN },
             });
         }
         if (updateToApplyG != null && updateToApplyG != "") {
-            axios.post('http://localhost:3001/api/updateData', {
+            axios.post('http://localhost:3000/api/updateData', {
                 id: objIdToUpdate,
                 update: { geschlecht: updateToApplyG },
             });
         } if (updateToApplyS != null && updateToApplyS != "") {
-            axios.post('http://localhost:3001/api/updateData', {
+            axios.post('http://localhost:3000/api/updateData', {
                 id: objIdToUpdate,
                 update: { strasse: updateToApplyS },
             });
         } if (updateToApplyP != null && updateToApplyP != "") {
-            axios.post('http://localhost:3001/api/updateData', {
+            axios.post('http://localhost:3000/api/updateData', {
                 id: objIdToUpdate,
                 update: { postleitzahl: updateToApplyP },
             });
         } if (updateToApplyO != null && updateToApplyO != "") {
-            axios.post('http://localhost:3001/api/updateData', {
+            axios.post('http://localhost:3000/api/updateData', {
                 id: objIdToUpdate,
                 update: { ort: updateToApplyO },
             });
         };
     }
-
+    
     render() {
         const { data } = this.state;
+        const query = { nachname: this.state.searchQuery };
+        var results = [];
+        data.forEach((dat) => {
+            if (dat.nachname == query.nachname) {
+                results.push(dat);
+            }
+        });
+        window.scrollY = 40;
         return (
             <div>
-                <ul>
+                <ul id="list" style={{ width: 300, height: 400, overflow: 'scroll' }}>
                     {data.length <= 0
                         ? 'NO DB ENTRIES YET'
                         : data.map((dat) => (
@@ -248,6 +256,28 @@ class App extends Component {
                 UPDATE
           </button>
                 </div>
+                <h1>Suche</h1>
+                <input
+                    type="text"
+                    style={{ width: '200px' }}
+                    onChange={(e) => this.setState({ searchQuery: e.target.value })}
+                    placeholder="Suche nach Nachname"
+                />
+                <ul style={{ width: 300, height: 400, overflow: 'scroll' }}>
+                    {results.length <= 0
+                        ? 'No Match'
+                        : results.map((dat) => (
+                            <li style={{ padding: '10px' }} key={data.nachname}>
+                                <span style={{ color: 'gray' }}> id: </span> {dat.id} <br />
+                                <span style={{ color: 'gray' }}> Vorname: </span> {dat.vorname}<br />
+                                <span style={{ color: 'gray' }}> Nachname: </span> {dat.nachname}<br />
+                                <span style={{ color: 'gray' }}> Geschlecht: </span> {dat.geschlecht}<br />
+                                <span style={{ color: 'gray' }}> Strasse: </span> {dat.strasse}<br />
+                                <span style={{ color: 'gray' }}> Postleitzahl: </span> {dat.postleitzahl}<br />
+                                <span style={{ color: 'gray' }}> Ort: </span> {dat.ort}<br />
+                            </li>
+                        ))}
+                </ul>
             </div>
         );
     }
