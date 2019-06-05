@@ -81,12 +81,20 @@ class App extends Component {
 
     updateDB = (idToUpdate, updateToApplyVN, updateToApplyNN, updateToApplyG, updateToApplyS, updateToApplyP, updateToApplyO) => {
         let objIdToUpdate = null;
-        parseInt(idToUpdate);
-        this.state.data.forEach((dat) => {
-            if (dat.id == idToUpdate) {
-                objIdToUpdate = dat._id;
-            }
-        });
+        if (idToUpdate.match(/[a-z]/i)) {
+            objIdToUpdate = idToUpdate;
+        }
+        else if (idToUpdate.match("[0-9]+"))
+        {
+            parseInt(idToUpdate);
+            this.state.data.forEach((dat) => {
+                if (dat.id == idToUpdate) {
+                    objIdToUpdate = dat._id;
+                }
+            });
+        }
+
+
         if (updateToApplyVN != null && updateToApplyVN != "") {
             axios.post('http://localhost:3001/api/updateData', {
                 id: objIdToUpdate,
@@ -122,6 +130,71 @@ class App extends Component {
         };
     }
 
+    clicked = (param: String) => {
+
+        switch (param) {
+            case "add":
+                if (document.getElementById("addDiv").hidden) {
+                    document.getElementById("addDiv").hidden = false;
+                } else {
+                    document.getElementById("addDiv").hidden = true;
+
+                }
+                break;
+            case "del":
+                if (document.getElementById("delDiv").hidden) {
+                    document.getElementById("delDiv").hidden = false;
+                } else {
+                    document.getElementById("delDiv").hidden = true;
+
+                }
+                break;
+            case "update":
+                if (document.getElementById("updateDiv").hidden) {
+                    document.getElementById("updateDiv").hidden = false;
+                } else {
+                    document.getElementById("updateDiv").hidden = true;
+
+                }
+                break;
+
+
+
+        }
+    }
+    parseGender = () => {
+        var x = document.getElementById("geschlecht").value;
+        var v = document.getElementById("geschlechtNew").value;
+        switch (x) {
+            case "male":
+                this.setState({ geschlecht: "Maennlich" });
+                break;
+            case "female":
+                this.setState({ geschlecht: "Weiblich" });
+                break;
+            case "diverse":
+                this.setState({ geschlecht: "Divers" });
+                break;
+            case "select":
+                this.setState({ geschlecht: null });
+                break
+        };
+
+        switch (v) {
+            case "maleNew":
+                this.setState({ updateToApplyG: "Maennlich" });
+                break;
+            case "femaleNew":
+                this.setState({ updateToApplyG: "Weiblich" });
+                break;
+            case "diverseNew":
+                this.setState({ updateToApplyG: "Divers" });
+                break;
+            case "selectNew":
+                this.setState({ geschlecht: null });
+                break
+        }
+    }
     render() {
         const { data } = this.state;
         const query = { nachname: this.state.searchQuery };
@@ -137,7 +210,7 @@ class App extends Component {
         window.scrollY = 40;
         return (
             <div>
-                <table border="1">
+                <table id="datas">
                   <tr>
                     <th>Mongo-ID</th>
                     <th>My-ID</th>
@@ -148,7 +221,7 @@ class App extends Component {
                     <th>PLZ</th>
                     <th>Ort</th>
                   </tr>
-                { data.sort((a, b) => (a.nachname.toLowerCase() > b.nachname.toLowerCase()) ? 1 : -1).map((dat) => (
+                { data.map((dat) => (
                     <tr>
                       <td>{dat._id}</td>
                       <td>{dat.id} </td>
@@ -160,30 +233,26 @@ class App extends Component {
                       <td>{dat.ort}</td>
                     </tr>
                     ))}
+                    <div id="mainButtons">
+                        <button class="button" id="addButton" onClick={() => this.clicked("add")}>
+                            Add Record
+                        </button>
+                        <button class="button" id="delButton" onClick={() => this.clicked("del")}>
+                            Delete Record
+                        </button>
+                        <button class="button" id="upButton" onClick={() => this.clicked("update")}>
+                            Update Record
+                        </button>
+                    </div>
+
                 </table>
-
-
-                <ul id="list" style={{ width: 300, height: 400, overflow: 'scroll' }}>
-                    {data.length == 0
-                        ? 'NO DB ENTRIES YET'
-                        : data.map((dat) => (
-                            <li style={{ padding: '10px' }} key={data.nachname}>
-                                <span style={{ color: 'red' }}> MongoDB-ID: </span> {dat._id} <br />
-                                <span style={{ color: 'gray' }}> ID: </span> {dat.id} <br />
-                                <span style={{ color: 'gray' }}> Vorname: </span> {dat.vorname}<br />
-                                <span style={{ color: 'gray' }}> Nachname: </span> {dat.nachname}<br />
-                                <span style={{ color: 'gray' }}> Geschlecht: </span> {dat.geschlecht}<br />
-                                <span style={{ color: 'gray' }}> Strasse: </span> {dat.strasse}<br />
-                                <span style={{ color: 'gray' }}> Postleitzahl: </span> {dat.postleitzahl}<br />
-                                <span style={{ color: 'gray' }}> Ort: </span> {dat.ort}<br />
-                            </li>
-                        ))}
-                </ul>
-                <div style={{ padding: '10px' }}>
+                <div class="statDiv" style={{ padding: '10px' }} id="addDiv" hidden="true">
 
 
                     <input
                         type="text"
+                        class="textField"
+                        id="textField"
                         onChange={(e) => this.setState({ vorname: e.target.value })}
                         placeholder="Vorname"
                         style={{ width: '200px' }}
@@ -191,20 +260,24 @@ class App extends Component {
                     <br />
                     <input
                         type="text"
+                        class="textField"
                         onChange={(e) => this.setState({ nachname: e.target.value })}
                         placeholder="Nachname"
                         style={{ width: '200px' }}
                     />
                     <br />
-                    <input
-                        type="text"
-                        onChange={(e) => this.setState({ geschlecht: e.target.value })}
-                        placeholder="Geschlecht"
-                        style={{ width: '200px' }}
-                    />
+                    <select id="geschlecht" name="geschlecht"
+                        onChange={() => this.parseGender()}
+                    >
+                        <option value="select">....</option>
+                        <option value="male">Maennlich</option>
+                        <option value="female">Weiblich</option>
+                        <option value="diverse">Divers</option>
+                    </select>
                     <br />
                     <input
                         type="text"
+                        class="textField"
                         onChange={(e) => this.setState({ strasse: e.target.value })}
                         placeholder="Strasse"
                         style={{ width: '200px' }}
@@ -212,6 +285,7 @@ class App extends Component {
                     <br />
                     <input
                         type="text"
+                        class="textField"
                         onChange={(e) => this.setState({ postleitzahl: e.target.value })}
                         placeholder="Postleitzahl"
                         style={{ width: '200px' }}
@@ -219,31 +293,34 @@ class App extends Component {
                     <br />
                     <input
                         type="text"
+                        class="textField"
                         onChange={(e) => this.setState({ ort: e.target.value })}
                         placeholder="Ort"
                         style={{ width: '200px' }}
                     />
-                    <button onClick={() => this.putDataToDB(this.state.vorname, this.state.nachname, parseInt(this.state.geschlecht), this.state.strasse, parseInt(this.state.postleitzahl), this.state.ort)}>
+                    <button class="button" id="Button" onClick={() => this.putDataToDB(this.state.vorname, this.state.nachname, this.state.geschlecht, this.state.strasse, parseInt(this.state.postleitzahl), this.state.ort)}>
                         ADD
           </button>
                 </div>
-                <div style={{ padding: '10px' }}>
+                <div class="statDiv" id="delDiv" hidden="true" style={{ padding: '10px' }}>
                     <input
                         type="text"
                         style={{ width: '300px' }}
                         onChange={(e) => this.setState({ idToDelete: e.target.value })}
                         placeholder="ID / MongoDB-ID des zu loeschenden Objektes"
                     />
-                    <button onClick={() => this.deleteFromDB(this.state.idToDelete)}>
+                    <button class="button" id="Button" onClick={() => this.deleteFromDB(this.state.idToDelete)}>
                         DELETE
           </button>
+
+
                 </div>
-                <div style={{ padding: '10px' }}>
+                <div class="statDiv"  id="updateDiv" hidden="true" style={{ padding: '10px' }}>
                     <input
                         type="text"
                         style={{ width: '200px' }}
                         onChange={(e) => this.setState({ idToUpdate: e.target.value })}
-                        placeholder="id des zu updatenden Objektes"
+                        placeholder="id / Mongo-ID des zu updatenden Objektes"
                     />
                     <br />
                     <input
@@ -260,12 +337,14 @@ class App extends Component {
                         placeholder="Neuer Nachname"
                     />
                     <br/>
-                    <input
-                        type="text"
-                        style={{ width: '200px' }}
-                        onChange={(e) => this.setState({ updateToApplyG: e.target.value })}
-                        placeholder="Neues Geschlecht"
-                    />
+                    <select id="geschlechtNew" name="geschlechtNew"
+                        onChange={() => this.parseGender()}
+                    >
+                        <option value="selectNew">....</option>
+                        <option value="maleNew">Maennlich</option>
+                        <option value="femaleNew">Weiblich</option>
+                        <option value="diverseNew">Divers</option>
+                    </select>
                     <br />
                     <input
                         type="text"
@@ -288,6 +367,7 @@ class App extends Component {
                         placeholder="Neuer Ort"
                     />
                     <button
+                        class="button"
                         onClick={() =>
                             this.updateDB(this.state.idToUpdate, this.state.updateToApplyVN, this.state.updateToApplyNN, this.state.updateToApplyG, this.state.updateToApplyS, this.state.updateToApplyP, this.state.updateToApplyO)
                 }

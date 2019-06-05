@@ -7,7 +7,7 @@ const DataSchema = new Schema(
         id: Number,
         vorname: String,
         nachname: String,
-        geschlecht: Number,
+        geschlecht: String,
         strasse: String,
         postleitzahl: Number,
         ort: String

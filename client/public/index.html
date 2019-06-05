@@ -1,6 +1,78 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
+      <style>
+          #datas {
+              font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+          }
+
+              #datas td, #customers th {
+                  border: 1px solid #ddd;
+                  padding: 8px;
+              }
+
+              #datas tr:nth-child(even) {
+                  background-color: #f2f2f2;
+              }
+
+              #datas tr:hover {
+                  background-color: #ddd;
+              }
+
+              #datas th {
+                  padding-top: 12px;
+                  padding-bottom: 12px;
+                  text-align: left;
+                  background-color: #4CAF50;
+                  color: white;
+              }
+             .button {
+                background-color: #4CAF50; /* Green */
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+             }
+          #mainButtons {
+              width:auto;
+          }
+          input[type=text], select {
+              width: 100%;
+              padding: 12px 20px;
+              margin: 8px 0;
+              display: inline-block;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              box-sizing: border-box;
+          }
+
+          input[type=submit]{
+              width: 100%;
+              background-color: #4CAF50;
+              color: white;
+              padding: 14px 20px;
+              margin: 8px 0;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+          }
+
+          input[type=submit]:hover {
+              background-color: #45a049;
+             }
+
+          .statDiv {
+              width: 25%;
+              border-radius: 5px;
+              background-color: #f2f2f2;
+              padding: 20px;
+          }
+      </style>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,7 +91,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Ausbildungs Aufgabe</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
