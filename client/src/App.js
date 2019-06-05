@@ -14,7 +14,7 @@ class App extends Component {
         idToUpdate: null,
         objectToUpdate: null,
     };
-    
+
     componentDidMount() {
         this.getDataFromDb();
         if (!this.state.intervalIsSet) {
@@ -121,7 +121,7 @@ class App extends Component {
             });
         };
     }
-    
+
     render() {
         const { data } = this.state;
         const query = { nachname: this.state.searchQuery };
@@ -131,12 +131,38 @@ class App extends Component {
             var b = "" + query.nachname;
             if (a.toLocaleLowerCase() == b.toLocaleLowerCase()) {
                 results.push(dat);
-                
+
             }
         });
         window.scrollY = 40;
         return (
             <div>
+                <table border="1">
+                  <tr>
+                    <th>Mongo-ID</th>
+                    <th>My-ID</th>
+                    <th>Vorname</th>
+                    <th>Nachname</th>
+                    <th>Geschlecht</th>
+                    <th>Strasse</th>
+                    <th>PLZ</th>
+                    <th>Ort</th>
+                  </tr>
+                { data.sort((a, b) => (a.nachname.toLowerCase() > b.nachname.toLowerCase()) ? 1 : -1).map((dat) => (
+                    <tr>
+                      <td>{dat._id}</td>
+                      <td>{dat.id} </td>
+                      <td>{dat.vorname}</td>
+                      <td>{dat.nachname}</td>
+                      <td>{dat.geschlecht}</td>
+                      <td>{dat.strasse}</td>
+                      <td>{dat.postleitzahl}</td>
+                      <td>{dat.ort}</td>
+                    </tr>
+                    ))}
+                </table>
+
+
                 <ul id="list" style={{ width: 300, height: 400, overflow: 'scroll' }}>
                     {data.length == 0
                         ? 'NO DB ENTRIES YET'
@@ -155,7 +181,7 @@ class App extends Component {
                 </ul>
                 <div style={{ padding: '10px' }}>
 
-                    
+
                     <input
                         type="text"
                         onChange={(e) => this.setState({ vorname: e.target.value })}
