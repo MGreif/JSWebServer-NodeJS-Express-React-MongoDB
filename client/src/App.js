@@ -10,10 +10,11 @@ class App extends Component {
         message: null,
         intervalIsSet: false,
         idToDelete: null,
+        MDBidToDelete: null,
         idToUpdate: null,
         objectToUpdate: null,
     };
-
+    
     componentDidMount() {
         this.getDataFromDb();
         if (!this.state.intervalIsSet) {
@@ -30,7 +31,7 @@ class App extends Component {
     }
 
     getDataFromDb = () => {
-        fetch('http://localhost:3000/api/getData')
+        fetch('http://localhost:3001/api/getData')
             .then((data) => data.json())
             .then((res) => this.setState({ data: res.data }));
     };
@@ -42,7 +43,7 @@ class App extends Component {
             ++idToBeAdded;
         }
 
-        axios.post('http://localhost:3000/api/putData', {
+        axios.post('http://localhost:3001/api/putData', {
             id: idToBeAdded,
             vorname: vorname,
             nachname: nachname,
@@ -54,20 +55,28 @@ class App extends Component {
         });
     };
 
-    deleteFromDB = (idTodelete) => {
-        parseInt(idTodelete);
-        let objIdToDelete = null;
-        this.state.data.forEach((dat) => {
-            if (dat.id == idTodelete) {
-                objIdToDelete = dat._id;
-            }
-        });
 
-        axios.delete('http://localhost:3000/api/deleteData', {
+    deleteFromDB = (idTodelete) => {
+        let objIdToDelete = null;
+        if (idTodelete.match(/[a-z]/i)) {
+            objIdToDelete = idTodelete;
+        }
+        else if (idTodelete.match("[0-9]+")) {
+            parseInt(idTodelete);
+            this.state.data.forEach((dat) => {
+                if (dat.id == idTodelete) {
+                    objIdToDelete = dat._id;
+                }
+            });
+        }
+
+        axios.delete('http://localhost:3001/api/deleteData', {
             data: {
                 id: objIdToDelete,
             },
         });
+
+
     };
 
     updateDB = (idToUpdate, updateToApplyVN, updateToApplyNN, updateToApplyG, updateToApplyS, updateToApplyP, updateToApplyO) => {
@@ -79,34 +88,34 @@ class App extends Component {
             }
         });
         if (updateToApplyVN != null && updateToApplyVN != "") {
-            axios.post('http://localhost:3000/api/updateData', {
+            axios.post('http://localhost:3001/api/updateData', {
                 id: objIdToUpdate,
                 update: { vorname: updateToApplyVN },
             });
         }
         if (updateToApplyNN != null && updateToApplyNN != "") {
-            axios.post('http://localhost:3000/api/updateData', {
+            axios.post('http://localhost:3001/api/updateData', {
                 id: objIdToUpdate,
                 update: { nachname: updateToApplyNN },
             });
         }
         if (updateToApplyG != null && updateToApplyG != "") {
-            axios.post('http://localhost:3000/api/updateData', {
+            axios.post('http://localhost:3001/api/updateData', {
                 id: objIdToUpdate,
                 update: { geschlecht: updateToApplyG },
             });
         } if (updateToApplyS != null && updateToApplyS != "") {
-            axios.post('http://localhost:3000/api/updateData', {
+            axios.post('http://localhost:3001/api/updateData', {
                 id: objIdToUpdate,
                 update: { strasse: updateToApplyS },
             });
         } if (updateToApplyP != null && updateToApplyP != "") {
-            axios.post('http://localhost:3000/api/updateData', {
+            axios.post('http://localhost:3001/api/updateData', {
                 id: objIdToUpdate,
                 update: { postleitzahl: updateToApplyP },
             });
         } if (updateToApplyO != null && updateToApplyO != "") {
-            axios.post('http://localhost:3000/api/updateData', {
+            axios.post('http://localhost:3001/api/updateData', {
                 id: objIdToUpdate,
                 update: { ort: updateToApplyO },
             });
@@ -118,19 +127,23 @@ class App extends Component {
         const query = { nachname: this.state.searchQuery };
         var results = [];
         data.forEach((dat) => {
-            if (dat.nachname == query.nachname) {
+            var a = "" + dat.nachname;
+            var b = "" + query.nachname;
+            if (a.toLocaleLowerCase() == b.toLocaleLowerCase()) {
                 results.push(dat);
+                
             }
         });
         window.scrollY = 40;
         return (
             <div>
                 <ul id="list" style={{ width: 300, height: 400, overflow: 'scroll' }}>
-                    {data.length <= 0
+                    {data.length == 0
                         ? 'NO DB ENTRIES YET'
                         : data.map((dat) => (
                             <li style={{ padding: '10px' }} key={data.nachname}>
-                                <span style={{ color: 'gray' }}> id: </span> {dat.id} <br />
+                                <span style={{ color: 'red' }}> MongoDB-ID: </span> {dat._id} <br />
+                                <span style={{ color: 'gray' }}> ID: </span> {dat.id} <br />
                                 <span style={{ color: 'gray' }}> Vorname: </span> {dat.vorname}<br />
                                 <span style={{ color: 'gray' }}> Nachname: </span> {dat.nachname}<br />
                                 <span style={{ color: 'gray' }}> Geschlecht: </span> {dat.geschlecht}<br />
@@ -191,9 +204,9 @@ class App extends Component {
                 <div style={{ padding: '10px' }}>
                     <input
                         type="text"
-                        style={{ width: '200px' }}
+                        style={{ width: '300px' }}
                         onChange={(e) => this.setState({ idToDelete: e.target.value })}
-                        placeholder="id des zu loeschenden Objektes"
+                        placeholder="ID / MongoDB-ID des zu loeschenden Objektes"
                     />
                     <button onClick={() => this.deleteFromDB(this.state.idToDelete)}>
                         DELETE

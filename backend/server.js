@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const Data = require('./data');
 
-const API_PORT = 3000;
+const API_PORT = 3001;
 const app = express();
 app.use(cors());
 const router = express.Router();
@@ -47,12 +47,31 @@ router.delete('/deleteData', (req, res) => {
     });
 });
 
+allElementsFilled = (id, vorname, nachname, geschlecht, strasse, postleitzahl, ort) => {
+    if (!id && id !== 0) {
+        return false
+    } else if (!vorname) {
+        return false
+    } else if (!nachname) {
+        return false
+    } else if (!geschlecht) {
+        return false
+    } else if (!strasse) {
+        return false
+    } else if (!postleitzahl) {
+        return false
+    } else if (!ort) {
+        return false
+    }
+    return true
+}
+
 router.post('/putData', (req, res) => {
     let data = new Data();
 
     const { id, vorname, nachname, geschlecht, strasse, postleitzahl,ort } = req.body;
 
-    if (((((((!id && id !== 0) || !vorname) || !nachname) || !geschlecht) || !strasse) || !postleitzahl) || !ort) {
+    if (!allElementsFilled) {
         return res.json({
             success: false,
             error: 'INVALID INPUTS',
