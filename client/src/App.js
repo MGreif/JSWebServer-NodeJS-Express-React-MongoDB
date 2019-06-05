@@ -14,7 +14,6 @@ class App extends Component {
         idToUpdate: null,
         objectToUpdate: null,
     };
-
     componentDidMount() {
         this.getDataFromDb();
         if (!this.state.intervalIsSet) {
@@ -22,20 +21,17 @@ class App extends Component {
             this.setState({ intervalIsSet: interval });
         }
     }
-
     componentWillUnmount() {
         if (this.state.intervalIsSet) {
             clearInterval(this.state.intervalIsSet);
             this.setState({ intervalIsSet: null });
         }
     }
-
     getDataFromDb = () => {
         fetch('http://localhost:3001/api/getData')
             .then((data) => data.json())
             .then((res) => this.setState({ data: res.data }));
     };
-
     putDataToDB = (vorname, nachname, geschlecht, strasse, postleitzahl, ort) => {
         let currentIds = this.state.data.map((data) => data.id);
         let idToBeAdded = 0;
@@ -54,8 +50,6 @@ class App extends Component {
 
         });
     };
-
-
     deleteFromDB = (idTodelete) => {
         let objIdToDelete = null;
         if (idTodelete.match(/[a-z]/i)) {
@@ -78,7 +72,6 @@ class App extends Component {
 
 
     };
-
     updateDB = (idToUpdate, updateToApplyVN, updateToApplyNN, updateToApplyG, updateToApplyS, updateToApplyP, updateToApplyO) => {
         let objIdToUpdate = null;
         if (idToUpdate.match(/[a-z]/i)) {
@@ -129,16 +122,13 @@ class App extends Component {
             });
         };
     }
-
     clicked = (param: String) => {
-
         switch (param) {
             case "add":
                 if (document.getElementById("addDiv").hidden) {
                     document.getElementById("addDiv").hidden = false;
                 } else {
                     document.getElementById("addDiv").hidden = true;
-
                 }
                 break;
             case "del":
@@ -146,7 +136,6 @@ class App extends Component {
                     document.getElementById("delDiv").hidden = false;
                 } else {
                     document.getElementById("delDiv").hidden = true;
-
                 }
                 break;
             case "update":
@@ -154,14 +143,9 @@ class App extends Component {
                     document.getElementById("updateDiv").hidden = false;
                 } else {
                     document.getElementById("updateDiv").hidden = true;
-
                 }
                 break;
-
-
-
-        }
-    }
+        }  }
     parseGender = () => {
         var x = document.getElementById("geschlecht").value;
         var v = document.getElementById("geschlechtNew").value;
@@ -179,7 +163,6 @@ class App extends Component {
                 this.setState({ geschlecht: null });
                 break
         };
-
         switch (v) {
             case "maleNew":
                 this.setState({ updateToApplyG: "Maennlich" });
@@ -204,7 +187,6 @@ class App extends Component {
             var b = "" + query.nachname;
             if (a.toLocaleLowerCase() == b.toLocaleLowerCase()) {
                 results.push(dat);
-
             }
         });
         window.scrollY = 40;
@@ -401,5 +383,4 @@ class App extends Component {
         );
     }
 }
-
 export default App;
