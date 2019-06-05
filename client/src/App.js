@@ -122,6 +122,7 @@ class App extends Component {
             });
         };
     }
+
     clicked = (param: String) => {
         switch (param) {
             case "add":
@@ -145,7 +146,8 @@ class App extends Component {
                     document.getElementById("updateDiv").hidden = true;
                 }
                 break;
-        }  }
+        }
+    }
     parseGender = () => {
         var x = document.getElementById("geschlecht").value;
         var v = document.getElementById("geschlechtNew").value;
@@ -179,6 +181,7 @@ class App extends Component {
         }
     }
     render() {
+
         const { data } = this.state;
         const query = { nachname: this.state.searchQuery };
         var results = [];
@@ -193,8 +196,8 @@ class App extends Component {
         return (
             <div>
                 <table id="datas">
-                  <tr>
-                    <th>Mongo-ID</th>
+                    <tr>
+                        <th width="150">Mongo-ID</th>
                     <th>My-ID</th>
                     <th>Vorname</th>
                     <th>Nachname</th>
@@ -215,19 +218,20 @@ class App extends Component {
                       <td>{dat.ort}</td>
                     </tr>
                     ))}
-                    <div id="mainButtons">
-                        <button class="button" id="addButton" onClick={() => this.clicked("add")}>
-                            Add Record
-                        </button>
-                        <button class="button" id="delButton" onClick={() => this.clicked("del")}>
-                            Delete Record
-                        </button>
-                        <button class="button" id="upButton" onClick={() => this.clicked("update")}>
-                            Update Record
-                        </button>
-                    </div>
-
                 </table>
+                <div id="mainButtons">
+                    <button class="button" id="addButton" onClick={() => this.clicked("add")}>
+                        Add Record
+                        </button>
+                    <button class="button" id="delButton" onClick={() => this.clicked("del")}>
+                        Delete Record
+                        </button>
+                    <button class="button" id="upButton" onClick={() => this.clicked("update")}>
+                        Update Record
+                        </button>
+                </div>
+                <br />
+
                 <div class="statDiv" style={{ padding: '10px' }} id="addDiv" hidden="true">
 
 
@@ -251,7 +255,7 @@ class App extends Component {
                     <select id="geschlecht" name="geschlecht"
                         onChange={() => this.parseGender()}
                     >
-                        <option value="select">....</option>
+                        <option value="select">Geschlecht ...</option>
                         <option value="male">Maennlich</option>
                         <option value="female">Weiblich</option>
                         <option value="diverse">Divers</option>
@@ -294,8 +298,6 @@ class App extends Component {
                     <button class="button" id="Button" onClick={() => this.deleteFromDB(this.state.idToDelete)}>
                         DELETE
           </button>
-
-
                 </div>
                 <div class="statDiv"  id="updateDiv" hidden="true" style={{ padding: '10px' }}>
                     <input
@@ -322,7 +324,7 @@ class App extends Component {
                     <select id="geschlechtNew" name="geschlechtNew"
                         onChange={() => this.parseGender()}
                     >
-                        <option value="selectNew">....</option>
+                        <option value="selectNew">Neues Geschlecht ...</option>
                         <option value="maleNew">Maennlich</option>
                         <option value="femaleNew">Weiblich</option>
                         <option value="diverseNew">Divers</option>
